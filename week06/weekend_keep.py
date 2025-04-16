@@ -8,6 +8,7 @@ Additional features:
 """
 
 def main():
+    # Initialize variables for overall min/max
     min_life = float('inf')
     max_life = float('-inf')
     min_country = ""
@@ -15,26 +16,33 @@ def main():
     max_country = ""
     max_year = ""
     
+    # Initialize variables for year analysis
     year_data = {}
     
+    # Initialize variables for country analysis
     country_data = {}
     
+    # Initialize variables for largest drop
     largest_drop = 0
     drop_country = ""
     drop_year1 = ""
     drop_year2 = ""
-    prev_data = {}
+    prev_data = {}  # To store previous year's data for each country
     
+    # Read the file
     with open("life-expectancy.csv") as f:
+        # Skip header
         next(f)
         
         for line in f:
+            # Clean and split the line
             parts = line.strip().split(',')
             country = parts[0]
             code = parts[1]
             year = int(parts[2])
             life_exp = float(parts[3])
             
+            # Check for overall min/max
             if life_exp < min_life:
                 min_life = life_exp
                 min_country = country
@@ -45,14 +53,17 @@ def main():
                 max_country = country
                 max_year = year
                 
+            # Store data for year analysis
             if year not in year_data:
                 year_data[year] = []
             year_data[year].append((country, life_exp))
             
+            # Store data for country analysis
             if country not in country_data:
                 country_data[country] = []
             country_data[country].append((year, life_exp))
             
+            # Check for largest drop
             if country in prev_data:
                 prev_life = prev_data[country]
                 if prev_life - life_exp > largest_drop:
@@ -62,10 +73,12 @@ def main():
                     drop_year2 = year
             prev_data[country] = life_exp
     
+    # Print overall min/max
     print(f"The overall max life expectancy is: {max_life} from {max_country} in {max_year}")
     print(f"The overall min life expectancy is: {min_life} from {min_country} in {min_year}")
     print()
     
+    # Year analysis
     year_input = int(input("Enter the year of interest: "))
     
     if year_input in year_data:
@@ -83,6 +96,7 @@ def main():
     else:
         print(f"No data available for year {year_input}")
     
+    # Country analysis (additional feature)
     country_input = input("\nEnter a country to analyze (or press Enter to skip): ")
     if country_input in country_data:
         data = country_data[country_input]
@@ -100,6 +114,7 @@ def main():
     elif country_input:
         print(f"No data available for country {country_input}")
     
+    # Largest drop analysis (additional feature)
     if largest_drop > 0:
         print(f"\nLargest life expectancy drop: {largest_drop:.2f} years")
         print(f"Country: {drop_country} between {drop_year1} and {drop_year2}")
